@@ -1,6 +1,6 @@
 # Windows Codex Handoff
 
-최종 갱신: 2026-08-03
+최종 갱신: 2026-08-05
 
 ## Windows Codex에 전달할 첫 요청
 
@@ -18,16 +18,20 @@ Cosmos3-Nano를 Unitree Go2-W/A2 철도 순찰용 합성 데이터 생성기로 
 ## 지금까지 완료
 
 - 2×DGX Spark cluster 및 NCCL/RoCE 검증
-- BridgeData2 기반 비공식 Nano-LoRA 100-step 완료
+- BridgeData2 기반 실험적 Nano-LoRA 100-step 완료
 - LoRA-only update 및 base-weight freeze 확인
 - DCP save/resume: 3→4→10→100 steps 확인
 - Base/10/100 고정 프롬프트 영상 각 3개 생성
+- full-SFT 원본 9개 iteration 평균 459.57초로 정정
+- LoRA optimizer 15,335,424 elements(로그상 full-SFT 대비 약 0.220%) 확인
 
 ## 중요한 판단
 
 - NVIDIA 공식 Nano-LoRA recipe가 아니다.
 - 기술적 실행 가능성은 확인했지만 철도 domain 학습은 아직 시작하지 않았다.
 - 10-step 결과는 Base와 매우 유사하며 100-step은 더 크게 변하지만, 변화가 품질 향상을 뜻하지는 않는다.
+- full-SFT 약 109–110 GiB/node는 수동 관찰값이고 LoRA peak-memory 기록은 없어 메모리 비교 불가
+- 기존 raw step time 차이는 동일조건 benchmark가 아니므로 속도 향상으로 주장하지 않는다.
 - 철도 합성의 우선 방법은 실제 Unitree 정상 순찰 영상을 조건으로 하는 Video-to-Video다.
 - Reasoner는 자동 ground truth 생성기가 아니라 생성 조건 충족과 물리 타당성의 보조 검사기로 사용한다.
 - Unitree action/policy는 embodiment-specific 동기화 데이터와 안전 검증 전에는 실제 제어에 연결하지 않는다.

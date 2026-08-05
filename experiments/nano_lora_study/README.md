@@ -1,7 +1,9 @@
-# Cosmos3-Nano Full-SFT / LoRA Controlled Study
+# Cosmos3-Nano Full-SFT / Experimental LoRA Feasibility Study
 
-NVIDIA 공식 Nano full-SFT 기준선과 실험적 Nano-LoRA를 동일한
-데이터·장비 조건에서 비교하기 위한 운영 문서다.
+> 현재 결과 요약은 `STATUS.md`와 `RESULTS.md`, 다음 철도 실험은 `RESEARCH_PLAN.md`를 우선 확인한다.
+> 기존 실행은 동일조건 자원 benchmark가 아니므로 속도·메모리 효율 비교로 해석하지 않는다.
+
+NVIDIA 공식 Nano full-SFT 파생 기준선과 실험적 Nano-LoRA의 실행·검증 절차를 기록한 운영 문서다.
 
 ## 실험
 
@@ -11,7 +13,7 @@ NVIDIA 공식 Nano full-SFT 기준선과 실험적 Nano-LoRA를 동일한
 | B | `vision_sft_nano_lora_smoke` | Nano LoRA 삽입·학습·저장 검증 | 실험적 |
 
 두 실험 모두 NVIDIA BridgeData2 subset, Cosmos3-Nano DCP checkpoint,
-Wan2.2 VAE를 사용한다. A가 통과하기 전에는 B의 장기 학습을 시작하지 않는다.
+Wan2.2 VAE를 사용했다. 최초 계획에서는 A 통과 후 B를 실행하려 했으나, 실제로 A는 9 update 후 중단됐고 B는 별도 기술 검증으로 100-step까지 완료됐다.
 
 ## 파일 배치
 

@@ -1,40 +1,37 @@
 # Nano LoRA Study Status
 
-최종 갱신: 2026-07-31
+최종 갱신: 2026-08-05
 
-## 상태
+## 현재 단계
 
-**2-node 실제 학습 전, 설정 검증 완료**
+**BridgeData2 기반 실험적 Nano-LoRA 기술 검증 완료, 철도 데이터 실험 설계 단계**
 
-박사님 지시에 따라 NVIDIA 공식 Nano full-SFT를 먼저 재현하고 그 결과를
-실험적 Nano-LoRA와 비교한다.
+## 완료
 
-## 준비된 실험
+- 2×DGX Spark 분산 통신 및 FSDP 학습 경로 확인
+- 공식 Nano full-SFT 파생 recipe의 GB10 실행 특성 확인
+- 실험적 Nano-LoRA 3→4→10→100-step 저장·재시작 확인
+- optimizer가 288개 LoRA tensor만 선택함을 확인
+- 15,335,424개 LoRA parameter 학습 및 base-weight 고정 확인
+- Base·10-step·100-step에 동일한 3개 입력을 사용한 영상 생성
 
-- 실험 A: 공식 Nano full-SFT 파생 10-step smoke test
-- 실험 B: 동일 데이터·체크포인트의 Nano-LoRA 10-step smoke test
-- 두 설정 모두 `cosmos_framework.scripts.train --dryrun` 통과
-- NVIDIA 원본 recipe는 수정하지 않음
+## 실패·부분 완료
 
-## 현재 노드 환경
+- 공식 compile 설정은 kernel 요구 shared memory 229,520 B가 GB10 한계 101,376 B를 넘어 실패했다.
+- compile을 끈 full-SFT는 update 9회까지 완료했고 10번째 backward 이후 checkpoint 저장 전에 중단됐다.
+- 따라서 full-SFT 10-step 완료 및 checkpoint 성공으로 판정하지 않는다.
 
-- Host: `spark-fc00`
-- Git commit: `f734253f0f6af3e268372402f44435c38f55ef3e`
-- GPU: NVIDIA GB10
-- Driver: 580.126.09
-- PyTorch: 2.10.0+cu130
-- CUDA runtime: 13.0
-- NCCL: 2.28.9
+## 미실시
 
-PyTorch는 GB10 compute capability 12.1에 대해 컴파일 지원 범위가 12.0까지라는
-경고를 출력한다. 기본 CUDA tensor 연산은 통과했지만 custom CUDA kernel
-호환성은 실제 학습 smoke test에서 확인해야 한다.
+- 철도 데이터 post-training
+- LoRA와 full-SFT의 동일조건 속도·peak-memory benchmark
+- 전문가 평가 또는 downstream 철도 위험물 탐지 평가
+- 학습으로 인한 생성 품질 향상 입증
 
 ## 다음 게이트
 
-1. 두 번째 Spark에서 `check_local_inputs.sh` 실행
-2. 두 노드의 commit, PyTorch, CUDA, driver와 입력 경로 비교
-3. ConnectX-7 IP와 NCCL 통신 확인
-4. 실험 A 실행
-5. A가 통과한 뒤 실험 B 실행
-6. 결과를 `RESULT_TEMPLATE.md` 형식으로 기록
+1. Unitree 정상 순찰 원본과 사용 권한을 확보한다.
+2. 기상 변화와 선로 침입 위험물 taxonomy를 확정한다.
+3. 소량 Video-to-Video 학습·검증 split을 고정한다.
+4. 동일조건 자원 benchmark와 전문가 정성평가표를 준비한다.
+5. smoke → 소량 과적합 → held-out 평가 순으로 진행한다.

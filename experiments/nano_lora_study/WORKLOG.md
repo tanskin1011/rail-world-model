@@ -1,6 +1,6 @@
 # Cosmos3-Nano Post-training Worklog
 
-최종 갱신: 2026-07-31
+최종 갱신: 2026-08-05
 
 ## 목적과 현재 판정
 
@@ -8,10 +8,10 @@ NVIDIA 공식 Cosmos3-Nano full-SFT를 먼저 기준선으로 재현하고, 이�
 
 - 학습 가능성: 확인
 - 2-node FSDP/NCCL 통신: 확인
-- 10-step 완주 및 checkpoint 저장: 미확인
+- full-SFT 10-step 완주 및 checkpoint 저장: 실패(9 update 완료 후 중단)
 - 공식 `torch.compile` 설정: 현재 GB10에서 실패
 - GB10 호환 실행: `model.config.compile.enabled=false` 필요
-- Nano-LoRA 실제 학습 정확성: 아직 미검증
+- 실험적 Nano-LoRA 선택학습·저장·재시작: 확인(100-step)
 
 두 DGX Spark에서 full-SFT는 optimizer update까지 작동했다. Compile을 끈 실행은 9 iteration을 완료하고 10번째 backward까지 도달했으나, 터미널/원격 세션 이상 이후 checkpoint 저장 전에 종료됐다. Full-SFT는 장기 학습안 확정보다 Nano-LoRA 비교 기준선으로 사용한다.
 
@@ -93,7 +93,8 @@ Metadata 조회는 통과했지만 실제 frame decode에서 `ffmpeg`가 없어 
 
 - 완료 optimizer update: 9
 - 평균 loss: 약 0.2427; 범위 0.1991–0.3147
-- 평균 iteration: 약 437.35초(7.29분); 범위 383.35–595.96초
+- 평균 iteration: 459.57초(7.66분); 중앙값 444.90초; 범위 383.35–595.96초
+- 기존 기록의 437.35초는 원본 9개 시간의 산술평균과 일치하지 않아 2026-08-05 정정함
 - 10번째 backward와 grad norm `0.49414`: `outputs/nano_lora_study/official_full_sft_smoke/logs/rank0_gb10_no_compile.log:965`
 - 10번째 optimizer 완료 로그 및 checkpoint 없음
 - 설정된 `grad_clip.clip_norm=0.1`; 표의 norm은 clipping 전 값
@@ -112,15 +113,15 @@ Metadata 조회는 통과했지만 실제 frame decode에서 `ffmpeg`가 없어 
 
 1. 2×DGX Spark의 FSDP와 NCCL/RoCE 경로는 작동한다.
 2. Nano full-SFT는 compile off에서 반복 optimizer update가 가능하다.
-3. 약 110 GiB/node와 평균 7.29분/iteration으로 비용이 높다.
+3. 약 109–110 GiB/node 수동 관찰과 평균 7.66분/iteration으로 비용이 높게 관찰됐다. 메모리 원본 telemetry는 보존되지 않았다.
 4. 공식 compile 설정은 현재 GB10/PyTorch/Triton 조합에서 실패한다.
-5. Checkpoint save/resume은 아직 미검증이다.
+5. 이 시점에는 full-SFT checkpoint save/resume이 미검증이었다. 이후 실험적 Nano-LoRA DCP의 3→4→10→100 재시작을 확인했다.
 
 아직 주장할 수 없는 것:
 
 1. 모델 품질 향상 또는 철도 domain 특화 성공
-2. Nano-LoRA가 실제로 올바르게 학습됨
-3. LoRA가 full-SFT보다 빠르거나 memory를 절감함
+2. 철도 데이터에 대한 Nano-LoRA 학습 성공
+3. LoRA가 full-SFT보다 빠르거나 memory를 절감함(동일조건 비교 미실시)
 4. 마지막 중단이 OOM이었음
 
 적은 철도 data의 반복 실험을 위해 Nano-LoRA의 trainable parameter, optimizer memory, checkpoint size, base-weight 불변성을 다음 단계에서 검증할 가치가 충분하다.
@@ -138,7 +139,7 @@ Metadata 조회는 통과했지만 실제 frame decode에서 `ffmpeg`가 없어 
 
 ## PPT용 핵심 문장
 
-> 두 대의 DGX Spark에서 Cosmos3-Nano full-SFT의 학습 가능성은 확인했으나, GB10 compile 호환성과 약 110 GiB/node·평균 7.29분/step의 높은 비용 때문에 철도 소량 데이터 적용에는 Nano-LoRA의 정식 검증이 다음 연구 단계로 타당하다.
+> 두 대의 DGX Spark에서 Cosmos3-Nano full-SFT의 반복 update 가능성을 확인했고, 실험적 Nano-LoRA에서는 adapter 선택학습과 100-step DCP 재시작을 확인했다. 단, 메모리·속도 효율과 철도 특화 효과는 후속 동일조건 실험으로 검증해야 한다.
 
 PPT에는 “10-step 성공” 또는 “checkpoint 생성 성공”으로 표현하지 않는다. 정확한 표현은 “9 optimizer steps 완료, 10번째 backward 완료 후 저장 전 중단”이다.
 
@@ -154,3 +155,17 @@ PPT에는 “10-step 성공” 또는 “checkpoint 생성 성공”으로 표�
 - Auto-resume가 `iter_000000003`의 model/optim/scheduler/trainer를 인식함
 - 전체 재적재는 노드별 로컬 filesystem에 DCP shard가 분리된 상태와 반복 RoCE GID 변경 경고 속에서 정체되어 중단함
 - 판정: LoRA 주입·선택 학습·weight 변화·저장은 확인; 완전한 reload는 공유/통합 checkpoint storage 구성 후 재검증 필요
+
+## Nano-LoRA 재시작·100-step 및 자원 비교 정정 (2026-08-05)
+
+- DCP 흐름 `iter_000000003 → 004 → 010 → 100`과 model/optimizer/scheduler/trainer 복원을 확인했다.
+- 100-step 완료 및 `iter_000000100` checkpoint를 확인했다.
+- Base·step10·step100에서 동일한 prompt와 seed 101/102/103으로 총 9개 평가 영상을 생성했다.
+- 출력 변화는 확인했으나 품질 향상으로 판정하지 않는다. seed103은 탐색용 rail-themed 입력이며 철도 학습 결과가 아니다.
+- full-SFT optimizer: 405 tensor, 6,965,486,784 elements/rank.
+- Nano-LoRA optimizer: 288 tensor, 15,335,424 elements. full-SFT 보고값의 약 0.220%(약 1/454)다.
+- full-SFT iteration 1–9 평균은 459.57초(n=9)다.
+- Nano-LoRA iteration 11–100 평균은 310.12초(step 61 시간 누락, n=89)다.
+- raw 평균은 LoRA가 32.5% 낮지만 checkpoint 주기, EMA, 실행 구간이 달라 인과적 속도 향상으로 주장하지 않는다.
+- full-SFT 약 109–110 GiB/node는 수동 관찰값이며 원본 telemetry가 없다.
+- LoRA peak-memory 수도 보존되지 않아 메모리 감소 비교가 불가능하다.
