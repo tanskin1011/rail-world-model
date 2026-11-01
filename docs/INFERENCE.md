@@ -50,6 +50,6 @@ python3 infer.py --cancel /absolute/path/to/job_dir
 
 ## 검증 수준
 
-새 CLI의 CPU 검사, 실제 기존 입력, 토큰 잘림 없음, Action 계약 및 단위 테스트를 확인했다. 새 CLI의 GPU end-to-end 실행은 이번 이관 작업에서 아직 하지 않았다. 기존 성공 실행과 같은 native 로딩·생성 API를 사용하지만 새 실행 성공을 미리 보장하지 않는다.
+새 CLI의 CPU 검사, 실제 기존 입력, 토큰 잘림 없음, Action 계약 및 단위 테스트를 확인했다. 이어 기존 첫 이미지와 정속10 Action으로 GPU end-to-end 실행 1회를 수행했고, 최종 가중치 대조·생성·MP4 전체 디코딩까지 종료코드 0으로 통과했다. [검증 범위](CLI_VERIFICATION.md)를 참고한다. 임의의 모든 새 입력에 대한 성공이나 정확한 속도 재현을 보장하는 결과는 아니다.
 
 현재는 **이 Spark의 기존 자산을 연결한 CLI**다. compact DCP가 원래 frozen base shard를 참조하므로 iter300 폴더 하나만 다른 PC로 복사해도 작동하는 독립 모델 패키지는 아니다. 다른 PC에서는 원본 모델·VAE·tokenizer·프레임워크·자원 감시/TAO 도구를 갖추고 새 로컬 runtime profile을 작성해야 한다.

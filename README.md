@@ -53,7 +53,8 @@ Spark에서만 사용하는 근거 위치 조회 스크립트와 결과 목록�
 
 ## 핵심 문서
 
-- [최종 가중치 추론 CLI](docs/INFERENCE.md) — 구현 및 CPU 검사 완료, 새 GPU 실행은 미검증
+- [최종 가중치 추론 CLI](docs/INFERENCE.md) — CPU 검사와 단일 GPU 영상 생성 확인
+- [CLI 검증 범위](docs/CLI_VERIFICATION.md) — 확인한 것과 미검증 사항
 - [방법과 데이터](docs/METHOD.md)
 - [확인된 결과와 한계](docs/RESULTS.md)
 - [개발·이관 상태](docs/REPRODUCTION_STATUS.md)

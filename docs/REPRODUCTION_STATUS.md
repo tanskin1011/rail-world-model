@@ -6,7 +6,7 @@
 - 단위 테스트
 - 기존 근거·원본 경로 인덱스 생성(CPU)
 - `infer.py --check`: 실제 기존 입력·native config·토큰 CPU 검사 통과
-- `infer.py --run/--status/--logs/--cancel`: 최종 B 로딩용 CLI 구현. 새 GPU end-to-end 검증은 아직 없음
+- `infer.py --run/--status/--logs/--cancel`: 최종 B 로딩용 CLI 구현. 단일 실제 GPU 실행 및 상태·로그 조회 확인. 중단 명령의 실제 실행 중 취소는 이번에 시험하지 않음.
 
 ## 기존 Spark에서 확인된 것
 
@@ -21,7 +21,7 @@
 1. 기존 고정 실행본과 편집용 코드를 구분해 프로젝트 고유 부분만 추출.
 2. 패키지·NVIDIA 원본 라이선스·파생 코드 출처 검토.
 3. 사용자 설정으로 checkpoint/VAE/tokenizer/input/output 경로 지정.
-4. 추론 CLI 이관은 구현 및 CPU 검사 완료. 학습 CLI 이관과 추론 GPU 재현 확인은 미완료.
+4. 추론 CLI 이관은 CPU 검사와 단일 GPU 재현 확인 완료. 학습 CLI 이관은 미완료.
 5. GPU 없는 config/입력 dry-run 검증. 이후 명시된 범위에서 GPU 재현 확인.
 6. 승인된 최소 예시·환경 버전·실행 결과 추가.
 
