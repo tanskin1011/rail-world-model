@@ -1,63 +1,83 @@
 # Rail World Model
 
-철도 로봇의 **첫 관측 이미지와 계획된 카메라 이동 경로로 미래 영상을 생성**하는 연구 프로젝트.
+### 카메라 경로 조건을 이용한 철도 로봇 시점 영상 생성
 
-> 연구 코드 개편 브랜치. 기관 원본 데이터·가중치·내부 경로·미공개 측정값은 포함하지 않는다. 아래 CPU 도구를 검증했으며 GPU CLI 재현 상태는 사용 설명서에 구분해 기록한다. 원본 실험은 이동하거나 변경하지 않는다.
+**첫 이미지 + 장면 설명 + 계획된 카메라 경로 → 미래 RGB 영상**
 
-## 연구 흐름
+NVIDIA Cosmos3-Nano를 철도 도메인에 적응시켜 로봇 학습·시험에 활용할 영상을 만드는 연구 프로젝트입니다. **로봇 모터를 직접 제어하는 정책 모델이나 안전성이 검증된 시뮬레이터는 아닙니다.**
 
-1. 텍스트 조건만으로 주행 방향·정지·가감속을 안정적으로 구분하기 어려웠다.
-2. Isaac Sim 영상과 프레임별 카메라 pose를 연결하고, 상대 이동 9D Action을 조건으로 사용했다.
-3. 전체 후속학습, Action 부분 학습, LoRA 등 기존 실험을 거쳐 Nano 기반 비교로 발전했다. 서로 다른 모델·데이터·프레임 수의 결과를 순수한 단일변수 비교로 해석하지 않는다.
-4. 공통 철도 FD_joint300 초기값에서 **domain 적응 → camera-conditioned FD 적응**을 수행했다.
-5. A는 가상 RGB, B는 가상·실사 RGB를 domain 단계에 사용한다. FD 단계는 두 모델 모두 가상 RGB와 카메라 Action을 사용한다. 실사 RGB에 가짜 pose를 붙이지 않는다.
-6. 같은 첫 이미지·Action·prompt·seed로 비교한다. 움직임 생성과 정확한 주행 제어, 장면 보존은 별도로 평가한다.
+[방법](docs/METHOD.md) · [수행 내용](docs/CONTRIBUTIONS.md) · [결과·한계](docs/RESULTS.md) · [추론 사용법](docs/INFERENCE.md)
 
-### 입력 → 처리 → 결과
+![Camera-conditioned world model](assets/pipeline.svg)
 
-```text
-Isaac Sim RGB + acquired camera poses ──> 상대 pose 9D Action
-실사 RGB ──────────────────────────────> domain 적응 데이터
-                      ↓
-          Domain LoRA → FD LoRA + camera 입력 projector
-                      ↓
-   첫 RGB + 장면 설명 + 계획된 Action → 미래 RGB 영상
-                      ↓
-    정지/이동·속도 순서·가감속·선로/주변 구조 평가
+> 자체 작성한 구조 설명도이며 실제 시설·모델 출력 이미지가 아닙니다. 기관 영상·지도·가중치·내부 경로·미공개 측정값은 배포하지 않습니다.
+
+## 문제와 접근
+
+철도처럼 보이는 영상과 **원하는 주행 조건을 따르는 영상**은 다릅니다. 텍스트 조건 실험의 한계를 바탕으로 카메라 이동값을 직접 조건으로 사용하는 Forward Dynamics로 연구를 발전시켰습니다.
+
+| 단계 | 수행 내용 | 설계 판단 |
+|---|---|---|
+| 데이터 | Isaac Sim RGB·카메라 pose 대응, 검수·분할 | 영상과 이동값의 시간축 일치 |
+| 조건 표현 | 인접 pose → 상대 이동·회전 9D Action | STOP도 항등 회전이므로 전체 0 벡터가 아님 |
+| Domain 적응 | 가상 전용 A / 가상·실사 혼합 B의 생성부 LoRA | 실사 RGB에 가짜 pose를 붙이지 않음 |
+| FD 적응 | 가상 RGB·Action으로 LoRA + camera 입력 projector 학습 | 첫 이미지와 Action을 미래 영상의 조건으로 사용 |
+| 비교·운영 | 입력·prompt·seed·설정 고정, CLI와 검증 도구 | 움직임 생성과 정확한 제어·장면 보존을 구별 |
+
+최종 Nano B는 backbone 전체 Full SFT가 아닙니다. 공통 초기값도 이미 철도 학습을 거친 FD_joint300입니다. [방법·계보](docs/METHOD.md)
+
+## 결과와 한계
+
+| 확인한 항목 | 근거 수준 |
+|---|---|
+| 기존 가중치를 새 CLI로 사용 | 실제 GPU 실행 1회 통과, 1,097개 tensor hash 대조 |
+| 영상 파일 생성 | 832×480 · 189프레임 · 24 FPS, 전체 디코딩 통과 |
+| 조건 입력 | 첫 프레임 [0], camera domain2, 188개 Action 확인 |
+| 연구 성능 | 기존 보고서에 제어·장면 실패도 기록. 모든 조건 성공으로 주장하지 않음 |
+| 재현 | 비공개 자산 없는 CPU 검사와 기존 Spark GPU 실행을 구분. 다른 장비 GPU는 미검증 |
+
+**남은 과제는 장면 구조·주변 객체 움직임의 유지와 정확한 속도 추종입니다.** 실사 혼합의 최종 A/B 우열이나 새 노선 일반화가 입증됐다고 서술하지 않습니다. [결과 해석](docs/RESULTS.md)
+
+대표 영상·이미지는 대외 사용 승인 후 추가합니다. 가상 결과 이미지로 빈자리를 대체하지 않았습니다.
+
+## 빠르게 실행해 보기 — GPU·비공개 데이터 불필요
+
+Python 3.10 이상. 외부 Python 패키지가 필요 없습니다.
+
+```bash
+git clone https://github.com/tanskin1011/cosmos3-nano-rail-lora.git
+cd cosmos3-nano-rail-lora
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+PYTHONPATH=src python3 -m rail_world_model make-action \
+  --profile const10 --output /tmp/rail_demo_const10.json
+PYTHONPATH=src python3 -m rail_world_model validate-action \
+  /tmp/rail_demo_const10.json --transitions 188
 ```
 
-실제 로봇 제어 명령을 직접 출력하는 정책 모델은 아니다.
+비공개 저장소이면 clone 권한이 필요합니다. 출력이 존재하면 다른 파일명을 사용하세요. 생성하는 Action은 **직선 카메라 이동의 수학적 예시**이며 실제 취득 pose나 모델의 속도 재현 성능을 입증하는 GT가 아닙니다.
+
+실제 영상 생성은 원본 Nano 의존 가중치·최종 checkpoint·VAE·tokenizer·검증된 native 환경 및 로컬 runtime profile이 필요합니다.
+
+```bash
+python3 infer.py --image input.png --action action.json \
+  --prompt-file scene.txt --output outputs/demo --check
+python3 infer.py --image input.png --action action.json \
+  --prompt-file scene.txt --output outputs/demo --run
+```
+
+[실행·상태·로그·중단](docs/INFERENCE.md) · [GPU 검증 범위](docs/CLI_VERIFICATION.md) · [비공개 자산 없는 CPU 재현](docs/CLEAN_CPU_REPRODUCTION.md)
 
 ## 개발 구조
 
-| 경로 | 역할 |
-|---|---|
-| `src/rail_world_model/` | 가벼운 데이터 계약 검증 도구 |
-| `configs/` | 장비 경로가 없는 연구 설정 요약 |
-| `tests/` | GPU 없는 단위 테스트 |
-| `docs/` | 방법·결과·재현 단계·공개 검토 |
-| `scripts/` | 로컬 실험 근거 인덱스 생성 |
-| `internal/` | 원본 절대경로·근거 해시. Git 제외 |
-| `assets/` | 공개 승인된 예시 전용. 현재 비어 있음 |
-
-## 실행 가능한 CPU 명령
-
-Python 3.10 이상, 외부 패키지 불필요:
-
-```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 -m rail_world_model validate-action /path/to/action.json --transitions 188
+```text
+infer.py                    # 추론 CLI 진입점
+src/rail_world_model/        # Action 검사·예시, 추론·자원 감시
+configs/                    # 연구 설정·로컬 runtime 예시
+tests/                      # 모델 없이 실행하는 테스트
+docs/                       # 방법·결과·재현·공개 범위
+assets/                     # 자체 구조도
 ```
 
-Spark에서만 사용하는 근거 위치 조회 스크립트와 결과 목록은 Git 제외로 관리한다.
+NVIDIA 프레임워크 전체 복사본이 아닌 연구용 프로젝트 계층입니다. 과거 버전은 Git 이력과 `archive/legacy-before-rebuild-20261102`에 보존했습니다. 11월 1일 입력 이미지 교체 추론은 이번 포트폴리오 범위에서 제외했습니다.
 
-## 핵심 문서
-
-- [최종 가중치 추론 CLI](docs/INFERENCE.md) — CPU 검사와 단일 GPU 영상 생성 확인
-- [CLI 검증 범위](docs/CLI_VERIFICATION.md) — 확인한 것과 미검증 사항
-- [방법과 데이터](docs/METHOD.md)
-- [확인된 결과와 한계](docs/RESULTS.md)
-- [개발·이관 상태](docs/REPRODUCTION_STATUS.md)
-- [GitHub 공개 전 검토](docs/RELEASE_CHECKLIST.md)
-
-11월 1일의 오송 이미지 교체 추론은 요청에 따라 이번 포트폴리오 범위에서 제외했다. 대용량 데이터·모델·NVIDIA 프레임워크 전체 복사본도 포함하지 않았다.
+[외부 구성요소·권리](THIRD_PARTY.md) · [공개 검토](docs/RELEASE_CHECKLIST.md) · [개발 상태](docs/DEVELOPMENT.md)

@@ -6,6 +6,7 @@
 - 단위 테스트
 - 기존 근거·원본 경로 인덱스 생성(CPU)
 - `infer.py --check`: 실제 기존 입력·native config·토큰 CPU 검사 통과
+- 설명용 5종 직선 Action 생성과 검사, 깨끗한 소스/새 가상환경 CPU 테스트 16개 통과. [확인 범위](CLEAN_CPU_REPRODUCTION.md)
 - `infer.py --run/--status/--logs/--cancel`: 최종 B 로딩용 CLI 구현. 단일 실제 GPU 실행 및 상태·로그 조회 확인. 중단 명령의 실제 실행 중 취소는 이번에 시험하지 않음.
 
 ## 기존 Spark에서 확인된 것

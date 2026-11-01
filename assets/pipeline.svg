@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="390" viewBox="0 0 1120 390" role="img" aria-labelledby="title desc">
+<title id="title">Camera-conditioned railway world model</title>
+<desc id="desc">Training uses simulation RGB and poses and real RGB for domain adaptation. First RGB, scene text and camera actions condition future RGB generation. Concept only, not an experimental result.</desc>
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8" fill="#637b96"/></marker></defs>
+<rect width="1120" height="390" rx="18" fill="#f3f6fb"/>
+<g font-family="Arial,sans-serif" fill="#173653">
+<text x="30" y="39" font-size="24" font-weight="700">Rail World Model</text><text x="30" y="74" font-size="13">TRAINING</text>
+<rect x="30" y="93" width="285" height="84" rx="12" fill="#dfeaf8"/>
+<text x="48" y="124" font-size="18">Isaac Sim RGB + poses</text><text x="48" y="153" font-size="14">Real RGB: domain stage only</text>
+<rect x="370" y="93" width="315" height="84" rx="12" fill="#dfeaf8"/>
+<text x="389" y="124" font-size="18">Domain LoRA → FD adaptation</text><text x="389" y="153" font-size="14">LoRA + camera input projector</text>
+<rect x="740" y="93" width="350" height="84" rx="12" fill="#214b75"/>
+<text x="759" y="124" font-size="18" fill="white">Adapted Cosmos3-Nano</text><text x="759" y="153" font-size="14" fill="#dceafa">Inherited railway weights / frozen base</text>
+<path d="M317 135 H360 M687 135 H730" stroke="#637b96" stroke-width="2" marker-end="url(#a)"/>
+<text x="30" y="228" font-size="13">INFERENCE</text>
+<rect x="30" y="247" width="330" height="84" rx="12" fill="#ddf1ef"/>
+<text x="48" y="278" font-size="18">First RGB + scene description</text><text x="48" y="307" font-size="14">Planned camera actions: 188 × 9D</text>
+<rect x="415" y="247" width="285" height="84" rx="12" fill="#ddf1ef"/>
+<text x="433" y="278" font-size="18">Forward Dynamics</text><text x="433" y="307" font-size="14">First-frame + Action conditioning</text>
+<rect x="755" y="247" width="335" height="84" rx="12" fill="#107a80"/>
+<text x="774" y="278" font-size="18" fill="white">Future RGB video</text><text x="774" y="307" font-size="14" fill="#e2fffc">Motion / rail / scene consistency review</text>
+<path d="M362 289 H405 M702 289 H745" stroke="#637b96" stroke-width="2" marker-end="url(#a)"/>
+<path d="M915 179 V205 H558 V237" fill="none" stroke="#637b96" stroke-width="2" marker-end="url(#a)"/>
+<text x="30" y="365" font-size="13" fill="#536c86">Concept only · Not a robot control policy · No private facility imagery</text>
+</g></svg>
