@@ -10,7 +10,7 @@ NVIDIA Cosmos3-Nano를 철도 도메인에 적응시켜 로봇 학습·시험에
 
 ![Camera-conditioned world model](assets/pipeline.svg)
 
-> 자체 작성한 구조 설명도이며 실제 시설·모델 출력 이미지가 아닙니다. 기관 영상·지도·가중치·내부 경로·미공개 측정값은 배포하지 않습니다.
+> 위 도식은 구조 설명용입니다. 아래 대표 미디어는 사용자의 게시 요청 범위에서 기존 결과를 편집한 것입니다. 맵 원본·모델 가중치·내부 경로·미공개 측정값은 포함하지 않습니다.
 
 ## 문제와 접근
 
@@ -38,7 +38,19 @@ NVIDIA Cosmos3-Nano를 철도 도메인에 적응시켜 로봇 학습·시험에
 
 **남은 과제는 장면 구조·주변 객체 움직임의 유지와 정확한 속도 추종입니다.** 실사 혼합의 최종 A/B 우열이나 새 노선 일반화가 입증됐다고 서술하지 않습니다. [결과 해석](docs/RESULTS.md)
 
-대표 영상·이미지는 대외 사용 승인 후 추가합니다. 가상 결과 이미지로 빈자리를 대체하지 않았습니다.
+## 대표 비교영상
+
+**A = 가상 전용 domain 적응 / B = 가상·실사 혼합 domain 적응. FD 단계는 같은 가상 데이터·카메라 조건을 사용합니다.** 이미지를 누르면 대응 MP4로 이동합니다.
+
+| 감속 요청: 후반 변화 감소 경향 | STOP 실패: 정지 요청에도 전진 |
+|---|---|
+| [![A/B 감속](assets/results/ab_decel30.jpg)](assets/results/ab_decel30.mp4) | [![A/B STOP 실패](assets/results/ab_stop.jpg)](assets/results/ab_stop.mp4) |
+
+- [감속 A/B 영상](assets/results/ab_decel30.mp4) · [가속 A/B 영상](assets/results/ab_accel10.mp4) · [STOP 실패 A/B 영상](assets/results/ab_stop.mp4)
+- [Isaac Sim 원본 / 최종 B 생성 비교](assets/results/sim_gt_vs_b_decel30.mp4)
+- [학습 이미지·대표 프레임·선택 이유와 한계](docs/MEDIA_GALLERY.md)
+
+새 추론이 아닌 기존189프레임·24 FPS 결과입니다. 감속 경향을 정확한 km/h 재현으로 해석하지 않으며, B의 일관된 개선도 주장하지 않습니다. 실패 사례와 구조 변형을 함께 보여줍니다.
 
 ## 빠르게 실행해 보기 — GPU·비공개 데이터 불필요
 

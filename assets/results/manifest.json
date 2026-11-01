@@ -1,0 +1,180 @@
+[
+  {
+    "id": "ab_decel30",
+    "kind": "matched_A_B_generated_comparison",
+    "video": "ab_decel30.mp4",
+    "preview": "ab_decel30.jpg",
+    "labels": [
+      "A | sim-only domain + FD",
+      "B | sim-real domain + FD"
+    ],
+    "request": "Deceleration action, planned 30 to 0 km-h",
+    "observation": "Later scene changes were weaker in the existing equal-interval review.",
+    "limit": "Not a calibrated 30-to-0 speed measurement or proof that B improves over A.",
+    "seed": 401,
+    "frames": 189,
+    "fps": 24,
+    "native_tile_size": [
+      832,
+      480
+    ],
+    "edited_size": [
+      1664,
+      528
+    ],
+    "preview_frame_indexes": [
+      0,
+      96,
+      188
+    ],
+    "source_video_sha256": [
+      "a6441df4c3eb71d84fb2851c2bc2ecf4a9395697804b2aad1fe87c64b27698f0",
+      "f125df0e3613b47ba0f39a65a1f970587a2ebf8a5da6e351f2c33f89ec73d0fb"
+    ],
+    "output_sha256": "3f58ccea93b15a4d21c74739790e32e726d1eff5a5c42c544d2830b11f3ec8dc",
+    "preview_sha256": "c2415e241ab0ca47567aa23c2d0c69f1a516d67bb5e1ecccd3d8375ad237b568",
+    "full_decode_pass": true,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p",
+    "original_frame_order_and_speed_preserved": true,
+    "new_inference": false
+  },
+  {
+    "id": "ab_accel10",
+    "kind": "matched_A_B_generated_comparison",
+    "video": "ab_accel10.mp4",
+    "preview": "ab_accel10.jpg",
+    "labels": [
+      "A | sim-only domain + FD",
+      "B | sim-real domain + FD"
+    ],
+    "request": "Acceleration action, planned 0 to 10 km-h",
+    "observation": "Both models show forward scene change; local structure can stretch or change.",
+    "limit": "Forward motion alone does not establish acceleration accuracy.",
+    "seed": 401,
+    "frames": 189,
+    "fps": 24,
+    "native_tile_size": [
+      832,
+      480
+    ],
+    "edited_size": [
+      1664,
+      528
+    ],
+    "preview_frame_indexes": [
+      0,
+      96,
+      188
+    ],
+    "source_video_sha256": [
+      "530f13469fc4810a7bc6b151136e168429f1708dd6f71e12da83708c3312a3ea",
+      "105f5af68dd807cfd4da202ae47ce07b6f918244b1fa7a9d0054c7f10d3636ec"
+    ],
+    "output_sha256": "685f72258f0700b5149fdadbc6ce1f736be458d64b80acd2dd10a0725292c011",
+    "preview_sha256": "1e63a9daf577edcb24c38e9a2cc2ddf46f0d34878aca23c15b9df2a839e1d187",
+    "full_decode_pass": true,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p",
+    "original_frame_order_and_speed_preserved": true,
+    "new_inference": false
+  },
+  {
+    "id": "ab_stop",
+    "kind": "matched_A_B_generated_comparison",
+    "video": "ab_stop.mp4",
+    "preview": "ab_stop.jpg",
+    "labels": [
+      "A | sim-only domain + FD",
+      "B | sim-real domain + FD"
+    ],
+    "request": "STOP action, zero translation and identity rotation",
+    "observation": "Both A and B show scene advance despite STOP input.",
+    "limit": "This is a control failure example, not a successful stop demonstration.",
+    "seed": 401,
+    "frames": 189,
+    "fps": 24,
+    "native_tile_size": [
+      832,
+      480
+    ],
+    "edited_size": [
+      1664,
+      528
+    ],
+    "preview_frame_indexes": [
+      0,
+      96,
+      188
+    ],
+    "source_video_sha256": [
+      "4334e74b0dfadafd9573f00ee2b5e423a7f71011e706c99620b57b87ec09bc6f",
+      "987018cbe0d2ade00f57be3b9af0d4343e173d014185f49824d8d062e2d4943b"
+    ],
+    "output_sha256": "4cf0ce8ba4017e162b56cf5bfce42373310c77deecd28ca03f50c94a42e0d104",
+    "preview_sha256": "71ef0e2797ded55ff2f28f5a57c6bdd38546a53af03baf776a456677560a2f38",
+    "full_decode_pass": true,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p",
+    "original_frame_order_and_speed_preserved": true,
+    "new_inference": false
+  },
+  {
+    "id": "sim_gt_vs_b_decel30",
+    "kind": "simulator_reference_vs_generated",
+    "video": "sim_gt_vs_b_decel30.mp4",
+    "preview": "sim_gt_vs_b_decel30.jpg",
+    "labels": [
+      "Isaac Sim reference",
+      "Final B | generated"
+    ],
+    "request": "Same initial image and deceleration trajectory",
+    "observation": "Compare rail layout and scene changes against the simulator reference.",
+    "limit": "Generated scene may diverge. Not pixel-exact reconstruction or unseen-site generalization evidence.",
+    "seed": 401,
+    "frames": 189,
+    "fps": 24,
+    "native_tile_size": [
+      832,
+      480
+    ],
+    "edited_size": [
+      1664,
+      528
+    ],
+    "preview_frame_indexes": [
+      0,
+      96,
+      188
+    ],
+    "source_video_sha256": [
+      "fc8d2b66cdd19ede187821cea74b2195674e3381d175ea03bb2e16d9ec1e5e7c",
+      "327d5085faa9d7aeaf3eb6914d913c6eb3464882d57c8487873f4bd014abdcd4"
+    ],
+    "output_sha256": "bd842cc7b65836da62b39551eee10615835b72228f2b0b8fcb90e685c15b5c8c",
+    "preview_sha256": "dcb7af6041f82c5e46b3fc37517bf08a21159fe746d782e66d3320c9d350344f",
+    "full_decode_pass": true,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p",
+    "original_frame_order_and_speed_preserved": true,
+    "new_inference": false
+  },
+  {
+    "id": "train_field",
+    "kind": "synthetic_training_frame",
+    "image": "train_field.png",
+    "caption": "Synthetic field scene, training source frame 60; not a generated result.",
+    "source_sha256": "a567a3be2e9e031015b4e7d58583751408427716b28dcd7c7b6310b04db34d3a",
+    "output_sha256": "a567a3be2e9e031015b4e7d58583751408427716b28dcd7c7b6310b04db34d3a",
+    "new_generation": false
+  },
+  {
+    "id": "train_tunnel",
+    "kind": "synthetic_training_frame",
+    "image": "train_tunnel.png",
+    "caption": "Synthetic tunnel scene, training source frame 60; not a real photograph or generated result.",
+    "source_sha256": "f0b730424dcbab02b15d6d57298c5222557e5a6e4c813c420cf1c533eea11892",
+    "output_sha256": "f0b730424dcbab02b15d6d57298c5222557e5a6e4c813c420cf1c533eea11892",
+    "new_generation": false
+  }
+]

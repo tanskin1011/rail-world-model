@@ -8,6 +8,7 @@ checkpoints/
 datasets/
 outputs/
 *.mp4
+!/assets/results/*.mp4
 *.zip
 *.tar
 *.pt

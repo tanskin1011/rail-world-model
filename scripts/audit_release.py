@@ -11,8 +11,14 @@ for relative in filter(None,paths):
         issues.append((relative,'private directory tracked'));continue
     if not path.is_file() or path.is_symlink():
         issues.append((relative,'missing file or symlink'));continue
-    if path.stat().st_size>2*1024*1024:
+    media=relative.startswith('assets/results/') and path.suffix.lower() in ['.mp4','.png','.jpg']
+    if path.stat().st_size>(16 if media else 2)*1024*1024:
         issues.append((relative,'unexpected large payload'));continue
+    if media:
+        header=path.read_bytes()[:16]
+        if not (header.startswith(b'\x89PNG\r\n\x1a\n') or header.startswith(b'\xff\xd8') or header[4:8]==b'ftyp'):
+            issues.append((relative,'unrecognized media signature'))
+        continue
     text=path.read_text()
     # Match concrete local identities, not generic /path/to documentation placeholders.
     if re.search(r'/home/[a-zA-Z0-9_-]+/|100\.\d{1,3}\.\d{1,3}\.\d{1,3}',text):
