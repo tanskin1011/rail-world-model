@@ -1,0 +1,24 @@
+{
+  "model": "Cosmos3-Nano",
+  "backend": "native Cosmos Framework Omni",
+  "initialization": "existing railway FD_joint300; not untouched pretrained Base",
+  "domain": {
+    "optimizer_updates": 300,
+    "synthetic_train_clips": 240,
+    "real_train_clips": 107,
+    "synthetic_exposure_fraction": 0.7,
+    "real_exposure_fraction": 0.3,
+    "camera_action": false
+  },
+  "forward_dynamics": {
+    "optimizer_updates": 300,
+    "synthetic_train_clips": 240,
+    "real_pose_used": false,
+    "trainable": ["generation_attention_lora", "masked_camera_input_projector"],
+    "lora_rank": 16,
+    "lora_alpha": 32
+  },
+  "video": {"width": 832, "height": 480, "frames": 189, "fps": 24},
+  "action": {"transitions": 188, "raw_dimensions": 9, "padded_dimensions": 64, "domain_id": 2},
+  "status": "documented protocol summary, not executable training config"
+}

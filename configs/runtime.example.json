@@ -1,0 +1,15 @@
+{
+  "python": "/path/to/native-framework/.venv/bin/python",
+  "framework": "/path/to/native-framework",
+  "checkpoint": "/path/to/final-checkpoint/iter_000000300",
+  "model_config": "/path/to/verified-model-config.json",
+  "expected_weights": "/path/to/verified-final-weight-hashes.json",
+  "ffmpeg": "/path/to/ffmpeg",
+  "guard_sources": "/path/to/verified-resource-guard-modules",
+  "inventory_sources": "/path/to/verified-gpu-inventory-module",
+  "bank": "/path/to/tao-skill-bank",
+  "environment": {
+    "BASE_CHECKPOINT_PATH": "/path/to/Cosmos3-Nano",
+    "WAN_VAE_PATH": "/path/to/Wan2.2_VAE.pth"
+  }
+}
