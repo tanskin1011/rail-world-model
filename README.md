@@ -44,7 +44,7 @@ Isaac Sim에서 영상과 카메라 좌표를 함께 취득했다. 인접 프레
 Python 3.10 이상. 외부 Python 패키지 없이 Action 생성·형식 검사와 단위 테스트를 실행할 수 있다.
 
 ```bash
-git clone https://github.com/tanskin1011/cosmos3-nano-rail-lora.git rail-world-model
+git clone https://github.com/tanskin1011/rail-world-model.git
 cd rail-world-model
 
 PYTHONPATH=src python3 -m unittest discover -s tests -v
