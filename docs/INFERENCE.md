@@ -1,6 +1,8 @@
-# 최종 Nano B 가중치로 영상 생성
+# Rail World Model 가중치로 영상 생성
 
-현재 Spark의 기존 venv·native Cosmos Framework·최종 FD_joint300 DCP·LoRA 설정을 연결했다. 재학습이나 체크포인트 변환은 하지 않는다. 실제 연결 경로는 Git 제외 `internal/runtime.json`에만 있다.
+기존 native Cosmos Framework 환경에서 학습된 가중치를 불러온다. 모델·VAE·tokenizer·실행 도구의 경로는 Git 제외 `internal/runtime.json`에 설정한다.
+
+현재 기본 모델은 FD500이다. FD300의 설정·가중치와 기존 생성 결과는 이전 버전으로 보존한다. 아래 GPU 실행 검증 기록은 FD300에서 수행한 기록이며, 기본 모델 변경 후의 새 GPU 실행은 이 문서에 포함하지 않는다.
 
 ## 1. 입력
 
@@ -21,7 +23,7 @@ python3 infer.py --image /path/to/input.png --action /path/to/action.json \
   --prompt-file /path/to/prompt.txt --output outputs/my_run --run
 ```
 
-`/path/to/...`는 실제 파일로 바꾸는 예시다. 현재 Spark의 바로 실행할 수 있는 기존 입력 명령은 Git 제외 `internal/EXAMPLE_COMMANDS.md`에 있다.
+`/path/to/...`를 실제 파일 경로로 바꾼다. 기존 Spark용 명령은 Git 제외 `internal/EXAMPLE_COMMANDS.md`에 보관한다.
 
 ## 2. 상태·로그·중단
 
@@ -42,14 +44,14 @@ python3 infer.py --cancel /absolute/path/to/job_dir
 - `video/vision.mp4`: 생성 영상
 - `video/sample_args.json`: 실제 유효 추론 조건
 - `request.json`: 입력·설정·SHA-256
-- `WEIGHTS_VERIFIED.json`: 로드 후 1,097개 텐서의 최종 B 해시 대조
+- `WEIGHTS_VERIFIED.json`: 로드 후 1,097개 텐서의 Rail World Model 가중치 해시 대조
 - `CONDITIONING_VERIFIED.json`: 실제 native batch의 조건 위치·Action shape
-- `RESULT.json`: 프레임 수·FPS·전체 디코딩 검사, 기술적 완료만 의미
+- `RESULT.json`: 프레임 수·FPS·전체 디코딩 검사 결과
 - `worker.stdout.log`, `worker.stderr.log`, `resources.jsonl`: 실행·자원 기록
 - `ERROR.json`: 실패 이유. 실패 시 자동 재시도·규격 축소 없음
 
 ## 검증 수준
 
-새 CLI의 CPU 검사, 실제 기존 입력, 토큰 잘림 없음, Action 계약 및 단위 테스트를 확인했다. 이어 기존 첫 이미지와 정속10 Action으로 GPU end-to-end 실행 1회를 수행했고, 최종 가중치 대조·생성·MP4 전체 디코딩까지 종료코드 0으로 통과했다. [검증 범위](CLI_VERIFICATION.md)를 참고한다. 임의의 모든 새 입력에 대한 성공이나 정확한 속도 재현을 보장하는 결과는 아니다.
+기존 첫 이미지와 정속10 Action으로 GPU 실행 1회를 확인했다. 가중치 대조·토큰 검사·생성·전체 MP4 디코딩을 종료코드 0으로 통과했다. 주행 제어 성능의 평가 범위는 [CLI 검증 기록](CLI_VERIFICATION.md)과 [연구 결과](RESULTS.md)를 구분해 확인한다.
 
-현재는 **이 Spark의 기존 자산을 연결한 CLI**다. compact DCP가 원래 frozen base shard를 참조하므로 iter300 폴더 하나만 다른 PC로 복사해도 작동하는 독립 모델 패키지는 아니다. 다른 PC에서는 원본 모델·VAE·tokenizer·프레임워크·자원 감시/TAO 도구를 갖추고 새 로컬 runtime profile을 작성해야 한다.
+다른 PC에서는 원본 모델·VAE·tokenizer·프레임워크·자원 감시/TAO 도구를 설치하고 로컬 runtime profile을 작성해야 한다. compact DCP는 동결된 가중치 shard를 외부에서 참조하므로, 체크포인트 폴더만 복사하면 필요한 가중치가 빠진다. 다른 장비의 GPU 실행은 아직 검증하지 않았다.

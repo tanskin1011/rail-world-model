@@ -6,7 +6,12 @@
 
 ## 데이터
 
-포스터 근거 문서의 분할은 가상 294개(train240/validation54), 실사 RGB120개(train107/validation13)이다. 파일 수 비율과 실제 학습 노출 비율을 구별한다. B domain은 600회 노출 중 가상420·실사180을 계획한 70:30 구성이다. FD는 가상 RGB와 pose만 사용한다. 최종 실행별 실제 노출 수·학습 완료 상태는 로컬 원본 로그를 근거로 별도 확정한다.
+| 자료 | Train | Validation | 사용 단계 |
+|---|---:|---:|---|
+| 가상 RGB·카메라 pose | 240 | 54 | domain·FD |
+| 실사 RGB | 107 | 13 | domain |
+
+B의 domain sampling 비율은 가상:실사 = 70:30이다. 파일 개수 비율과 학습 중 추출 비율은 다르다. FD 단계에는 가상 RGB·pose만 사용한다. 실행별 노출 수와 완료 기록은 내부 학습 로그에 보관한다.
 
 ## Camera Action
 
@@ -16,10 +21,12 @@ STOP은 이동이 0이지만 회전은 항등이다. 따라서 전체가 0인 9D
 
 ## 학습 범위
 
-domain: 생성부 attention q/k/v/o LoRA. FD: 같은 LoRA와 camera 입력 projector의 허용된 부분. LoRA rank16/alpha32. backbone·VAE·action 출력 head 등을 모두 full SFT한 최종 모델로 설명하지 않는다.
+domain 단계는 생성부 attention q/k/v/o의 LoRA를 학습한다. FD 단계는 같은 LoRA와 camera 입력 projector 일부를 학습한다. LoRA는 rank16/alpha32이며, backbone 전체·VAE·Action 출력 head를 모두 학습하는 Full SFT는 사용하지 않는다.
 
-FD에서 첫 영상 latent와 모든 Action은 clean condition이다. 미래 영상 latent의 RF 학습 손실이 LoRA와 입력 projector에 전달된다. 이때 Action을 미래 출력으로 예측하는 정책 학습은 아니다.
+FD에서는 첫 이미지와 모든 Action을 노이즈 없는 조건으로 넣고, 미래 영상 latent에 노이즈를 더해 복원하도록 학습한다. 영상 복원 손실이 LoRA와 입력 projector에 전달된다. 모델의 출력은 미래 영상이며 Action 자체를 예측하는 정책 학습은 아니다.
 
 ## 계보·비교 주의
 
-공통 초기값 자체가 기존 철도 FD_joint300이다. untouched pretrained Base에서 처음 학습한 결과가 아니다. 과거 Edge full-SFT 및 61프레임 Nano 결과는 연구 발전의 배경으로만 구분한다. test1 환경의 과거 노출 이력이 있으므로 새 노선 일반화 성공이라고 표현하지 않는다.
+공통 초기값은 철도 학습을 거친 `FD_joint300`이다. 사전학습 Base에서 새로 시작한 실험이 아니다. 과거 Edge Full SFT와 61프레임 Nano 실험은 이 모델의 결과와 구분한다. `test1` 환경은 과거 학습 노출 이력이 있어 새 노선 일반화 평가에 해당하지 않는다.
+
+현재 선택 모델 FD500은 기존 domain 적응 → FD300 이후 같은 학습 범위로 200 updates를 이어 학습한 체크포인트다. FD 단계의 누적 step은500이며, 이전 domain 단계와 선행 철도 학습의 step을 합친 수치가 아니다.

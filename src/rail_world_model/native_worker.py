@@ -78,7 +78,7 @@ def main():
     model=bundle.model;model.eval();model.requires_grad_(False)
     expected=json.loads(Path(runtime['expected_weights']).read_text())
     state=get_model_state_dict(model)
-    if set(state)!=set(expected):raise RuntimeError('Loaded weight keys do not match final B')
+    if set(state)!=set(expected):raise RuntimeError('Loaded weight keys do not match Rail World Model')
     for key,value in state.items():
         value=value.to_local() if hasattr(value,'to_local') else value
         value=value.detach().cpu().contiguous()

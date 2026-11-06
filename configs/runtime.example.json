@@ -1,7 +1,7 @@
 {
   "python": "/path/to/native-framework/.venv/bin/python",
   "framework": "/path/to/native-framework",
-  "checkpoint": "/path/to/final-checkpoint/iter_000000300",
+  "checkpoint": "/path/to/final-checkpoint/iter_000000500",
   "model_config": "/path/to/verified-model-config.json",
   "expected_weights": "/path/to/verified-final-weight-hashes.json",
   "ffmpeg": "/path/to/ffmpeg",

@@ -3,6 +3,26 @@ from pathlib import Path
 import argparse,json,shutil,sys
 
 
+def copy_reference_configs(source, output):
+    """Import native artifacts under stable project names; retain legacy input support."""
+    names={
+        'model_config.json':('model_config.json','MODEL_CONFIG.json'),
+        'weights_manifest.json':('weights_manifest.json','EXPECTED_B1097_TYPED.json'),
+    }
+    pending=[]
+    for target_name,candidates in names.items():
+        target=output/target_name
+        if target.exists() or target.is_symlink():
+            raise FileExistsError('Preserve '+str(target))
+        original=next((source/name for name in candidates if (source/name).is_file()),None)
+        if original is None:
+            raise FileNotFoundError('Missing reference artifact: '+', '.join(candidates))
+        pending.append((original,target))
+    output.mkdir(parents=True,exist_ok=True)
+    for original,target in pending:
+        shutil.copy2(original,target)
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--reference-run',type=Path,required=True)
@@ -14,14 +34,11 @@ def main():
     plan=json.loads((source/'RUN_PLAN.json').read_text())
     out=project/'internal';out.mkdir(exist_ok=True)
     if (out/'runtime.json').exists():raise SystemExit('Preserve existing runtime.json; edit a separately named profile instead')
-    for name in ['MODEL_CONFIG.json','EXPECTED_B1097_TYPED.json']:
-        target=out/('inference_'+name)
-        if target.exists():raise SystemExit('Preserve '+str(target))
-        shutil.copy2(source/name,target)
+    copy_reference_configs(source,out)
     framework=Path(plan['repo'])
-    cfg=json.loads((out/'inference_MODEL_CONFIG.json').read_text())['model']['config']
+    cfg=json.loads((out/'model_config.json').read_text())['model']['config']
     data=dict(python=plan['python'],framework=str(framework),checkpoint=plan['checkpoint'],
-        model_config=str(out/'inference_MODEL_CONFIG.json'),expected_weights=str(out/'inference_EXPECTED_B1097_TYPED.json'),
+        model_config=str(out/'model_config.json'),expected_weights=str(out/'weights_manifest.json'),
         ffmpeg=plan['ffmpeg'],guard_sources=str(source),inventory_sources=str(args.inventory_sources.resolve()),
         bank=str(args.bank.resolve()),reference_run=str(source),
         environment=dict(BASE_CHECKPOINT_PATH=str(framework/'examples/checkpoints/Cosmos3-Nano'),

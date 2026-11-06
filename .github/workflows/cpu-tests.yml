@@ -12,3 +12,5 @@ jobs:
           python-version: '3.11'
       - name: Validate CPU contracts without GPU or private assets
         run: PYTHONPATH=src python -m unittest discover -s tests -v
+      - name: Check public file sizes, paths and documentation links
+        run: python scripts/audit_release.py

@@ -1,4 +1,8 @@
 internal/
+local/
+# Compatibility alias for archived desktop paths; never publish local assets.
+/nano
+/.hidden
 .venv/
 __pycache__/
 *.pyc

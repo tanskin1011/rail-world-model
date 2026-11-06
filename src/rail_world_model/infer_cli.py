@@ -36,7 +36,7 @@ def load_runtime(path):
             raise ValueError(f'Missing or changed frozen checkpoint dependency: {file}')
     cfg = json.loads(Path(runtime['model_config']).read_text())['model']['config']
     if not cfg['lora_enabled'] or cfg['lora_rank'] != 16 or cfg['lora_alpha'] != 32:
-        raise ValueError('Final B requires LoRA rank16 / alpha32')
+        raise ValueError('Rail World Model requires LoRA rank16 / alpha32')
     if not Path(cfg['tokenizer']['vae_path']).is_file():
         raise ValueError('Missing Wan VAE')
     return runtime
