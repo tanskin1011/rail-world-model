@@ -1,0 +1,62 @@
+[
+  {
+    "id": "fd500_real_decel",
+    "checkpoint": "FD500",
+    "condition": "planned deceleration 30 to 0 km/h; not measured output speed",
+    "video": "fd500_real_decel.mp4",
+    "preview": "fd500_real_decel.gif",
+    "source_video_sha256": "5a59f318a1222140ddbae946dce3d980fda6980e6a3161d3a10a369bf108036e",
+    "video_sha256": "e605cd9224001af104efd9a791ad085846aa457df1341c4e1126e853e9126884",
+    "preview_sha256": "a4ea4646fc782350a45a41f720fff5fcd78bb3ada1858dc217bac30cd27c9062",
+    "video_probe": {
+      "codec_name": "h264",
+      "width": 832,
+      "height": 480,
+      "pix_fmt": "yuv420p",
+      "avg_frame_rate": "24/1",
+      "nb_read_frames": "189"
+    },
+    "preview_probe": {
+      "codec_name": "gif",
+      "width": 560,
+      "height": 324,
+      "pix_fmt": "bgra",
+      "avg_frame_rate": "25/3",
+      "nb_read_frames": "63"
+    },
+    "new_inference": false,
+    "editing": "Lossless video-stream remux; full-duration GIF downsampled to 8fps/560px, no interpolation or retiming",
+    "observation": "Qualitative background motion decreases later in the shot",
+    "limits": "High train viewpoint retained; tree/house details change"
+  },
+  {
+    "id": "fd500_sim_decel",
+    "checkpoint": "FD500",
+    "condition": "planned deceleration 30 to 0 km/h; not measured output speed",
+    "video": "fd500_sim_decel.mp4",
+    "preview": "fd500_sim_decel.gif",
+    "source_video_sha256": "b7248cdfcf264ac06d310e8e0b58b6fcd8abb516dd1acf7b2f1bd96cbc1846d6",
+    "video_sha256": "52f5c480b5745027d16aa4d3c81f4ace10efbf3a4f60b9d0e1547098abfb6b83",
+    "preview_sha256": "bae8edec4f70d7b6d7741751dd0448e86dda4260b754fd47dd0974a91c86736d",
+    "video_probe": {
+      "codec_name": "h264",
+      "width": 832,
+      "height": 480,
+      "pix_fmt": "yuv420p",
+      "avg_frame_rate": "24/1",
+      "nb_read_frames": "189"
+    },
+    "preview_probe": {
+      "codec_name": "gif",
+      "width": 560,
+      "height": 324,
+      "pix_fmt": "bgra",
+      "avg_frame_rate": "25/3",
+      "nb_read_frames": "63"
+    },
+    "new_inference": false,
+    "editing": "Lossless video-stream remux; full-duration GIF downsampled to 8fps/560px, no interpolation or retiming",
+    "observation": "Qualitative background motion decreases later in the shot",
+    "limits": "Seen synthetic training image; repeated sleeper patterns; not unseen-scene generalization"
+  }
+]

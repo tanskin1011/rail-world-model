@@ -1,10 +1,24 @@
-# 대표 결과: 같은 조건에서 달라진 것과 남은 한계
+# 대표 영상과 비교 결과
+
+## FD500 — 감속 요청
+
+| 실사 첫 이미지 | 합성 철도 장면 |
+|---|---|
+| [![FD500 실사](../assets/results/fd500_real_decel.gif)](../assets/results/fd500_real_decel.mp4) | [![FD500 합성](../assets/results/fd500_sim_decel.gif)](../assets/results/fd500_sim_decel.mp4) |
+
+같은 188×9 감속 Action과 motion-neutral prompt, seed401, UniPC30·guidance1·shift10으로 생성한 기존 결과다. 입력 이미지만 다르다. 두 장면 모두 후반에 배경 이동이 감소하는 경향이 기록됐으며 시간순 대표 프레임을 확인했다. 실사 장면은 높은 열차 시점을 유지하고 수목·집의 디테일이 변한다. 합성 장면은 학습에 노출된 이미지이며 침목 반복 무늬가 남는다.
+
+원본 전체189프레임·24FPS·832×480을 H.264 스트림 복사로 재포장했다. GIF는 전체 길이를8FPS·가로560픽셀로 줄인 미리보기로, 보간·슬로모션·선명화 없이 생성했다. 새 추론은 수행하지 않았다. [파일·편집 manifest](../assets/results/portfolio_manifest.json)
+
+실사 입력의 동일성은 SHA-256으로 기록한다. 원천 실사 영상이나 시설 원본 자료는 제공하지 않는다. 자료의 이용 조건은 [THIRD_PARTY](../THIRD_PARTY.md)에 정리했다.
+
+## FD300 — 동일 조건 A/B 비교
 
 ## 대표 결과 — 동일 조건 비교
 
 기존 생성 결과를 같은 길이·재생 속도로 편집했다. A/B의 차이와 제어 실패를 함께 비교한다.
 
-이 페이지의 B 영상은 FD300 결과다. 현재 선택 모델 FD500의 결과와 구분한다.
+이하 A/B의 B 영상은 FD300 결과다. 위 FD500 영상과 구분한다.
 
 **A:** 가상 RGB 전용 domain 적응 → 가상 RGB·camera Action FD 적응.
 

@@ -30,13 +30,13 @@ def audit(root, names):
             issues.append((relative, 'symlink not publishable')); continue
         if not path.is_file():
             issues.append((relative, 'missing file')); continue
-        media = relative.startswith('assets/results/') and path.suffix.lower() in {'.mp4', '.png', '.jpg'}
+        media = relative.startswith('assets/results/') and path.suffix.lower() in {'.mp4', '.png', '.jpg', '.gif'}
         if path.stat().st_size > (16 if media else 2) * 1024 * 1024:
             issues.append((relative, 'unexpected large payload')); continue
         if media:
             with path.open('rb') as stream:
                 header = stream.read(16)
-            if not (header.startswith(b'\x89PNG\r\n\x1a\n') or header.startswith(b'\xff\xd8') or header[4:8] == b'ftyp'):
+            if not (header.startswith(b'\x89PNG\r\n\x1a\n') or header.startswith(b'\xff\xd8') or header.startswith((b'GIF87a', b'GIF89a')) or header[4:8] == b'ftyp'):
                 issues.append((relative, 'unrecognized media signature'))
             continue
         try:

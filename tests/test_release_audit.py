@@ -62,3 +62,10 @@ class ReleaseAuditTests(unittest.TestCase):
             root = Path(d)
             (root / 'binary.bin').write_bytes(b'\xff\x00')
             self.assertEqual(len(release.audit(root, ['binary.bin'])), 1)
+
+    def test_gif_preview_recognized(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            folder = root / 'assets/results'; folder.mkdir(parents=True)
+            (folder / 'preview.gif').write_bytes(b'GIF89a' + b'\x00' * 10)
+            self.assertEqual(release.audit(root, ['assets/results/preview.gif']), [])

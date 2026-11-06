@@ -5,7 +5,7 @@
 - Python 표준 라이브러리 기반 Action 형식 검사 CLI
 - 단위 테스트
 - `infer.py --check`: 기존 입력·모델 설정·토큰 검사
-- 설명용 5종 직선 Action 생성·검사, 새 가상환경에서 CPU 테스트 29개 통과. [CPU 검사 방법](CLEAN_CPU_REPRODUCTION.md)
+- 설명용 5종 직선 Action 생성·검사, 새 가상환경에서 CPU 테스트 30개 통과. [CPU 검사 방법](CLEAN_CPU_REPRODUCTION.md)
 - `infer.py --run/--status/--logs/--cancel`: 영상 생성·상태·로그·중단 명령. 기존 Spark에서 GPU 생성 1회와 상태·로그 조회를 확인했다. 실행 중 취소 동작은 시험하지 않았다.
 
 ## 기존 Spark에서 확인된 것
