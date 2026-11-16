@@ -94,7 +94,7 @@ PYTHONPATH=src python3 -m rail_world_model validate-action \
 
 ### 영상 생성
 
-모델 파일은 [Hugging Face 비공개 저장소](https://huggingface.co/tanskin02/rail-world-model-camera-500step)에 보관한다. [다운로드·환경 설치·가중치 복원](docs/WEIGHTS.md)을 먼저 진행해 새 장비용 runtime을 만든다. 기존 Spark의 폴더 경로는 필요하지 않다.
+모델 파일은 [Hugging Face 모델 저장소](https://huggingface.co/tanskin02/rail-world-model-camera-500step)에서 로그인 없이 내려받을 수 있다. [다운로드·환경 설치·가중치 복원](docs/WEIGHTS.md)을 먼저 진행해 새 장비용 runtime을 만든다. 기존 Spark의 폴더 경로는 필요하지 않다.
 
 ```bash
 python3 infer.py --runtime internal/runtime_500step.json --image input.png --action action.json \
@@ -122,7 +122,7 @@ assets/                구조도·대표 영상·미리보기
 infer.py               영상 추론 진입점
 ```
 
-장비별 데이터·가중치·실행 설정은 Git에서 제외한 `local/`, `internal/`에 보관한다. NVIDIA Framework는 외부 의존성이며, 모델과 호환 실행 소스는 Hugging Face 비공개 저장소에서 내려받는다.
+장비별 데이터·가중치·실행 설정은 Git에서 제외한 `local/`, `internal/`에 보관한다. NVIDIA Framework는 외부 의존성이며, 모델과 호환 실행 소스는 Hugging Face 모델 저장소에서 내려받는다.
 
 ## 상세 문서
 

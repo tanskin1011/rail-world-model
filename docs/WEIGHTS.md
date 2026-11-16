@@ -2,11 +2,11 @@
 
 현재 선택 모델은 Rail World Model FD500이다. FD300에서 200 updates를 이어 학습했으며 생성부 LoRA와 카메라 입력부 일부를 포함한다. 일반 PEFT `adapter_model.safetensors` 형식이 아니라 native Cosmos Framework DCP의 추론용 delta 묶음이다.
 
-가중치와 실행 소스는 [Hugging Face](https://huggingface.co/tanskin02/rail-world-model-camera-500step)에 비공개로 보관한다. 접근 권한이 있는 계정으로 로그인해야 내려받을 수 있다. 공개 조건 확인 전까지 비공개를 유지한다.
+가중치와 실행 소스는 [Hugging Face](https://huggingface.co/tanskin02/rail-world-model-camera-500step)에서 공개한다. 로그인이나 접근 승인 없이 내려받을 수 있다.
 
 ## 다운로드·파일 검사
 
-Hugging Face CLI를 설치한 환경에서 `hf auth login`으로 로그인한 뒤, 프로젝트 루트에서 실행한다. 토큰은 터미널의 비공개 입력란에 입력한다.
+Hugging Face CLI를 설치한 뒤 프로젝트 루트에서 실행한다. 공개 파일 다운로드에는 토큰이 필요 없다.
 
 ```bash
 hf download tanskin02/rail-world-model-camera-500step \
@@ -89,8 +89,8 @@ python3 infer.py --runtime internal/runtime_500step.json \
 
 설정 생성 도구는 파일·도우미 모듈·기반 가중치 참조를 검사한다. 이후 `infer.py --check`에서 native 입력을 확인하고, 실제 생성할 때 `--run`으로 바꾼다. 입력 이미지·Action·프롬프트 준비는 [영상 추론](INFERENCE.md) 참조.
 
-## 공개 전 확인
+## 이용 조건
 
-외부 업로드 전에는 원래 취득한 기반 모델의 정확한 버전·라이선스 고지와 기관의 가중치 공개 권한을 확인해야 한다. 현재 [NVIDIA 모델 카드](https://huggingface.co/nvidia/Cosmos3-Nano)는 [OpenMDW-1.1](https://openmdw.ai/license/1-1/)을 안내하지만, 이 정보만으로 과거 다운로드 파일에 적용된 조건까지 확정하지 않는다.
+기반 모델과 외부 소프트웨어의 원래 이용 조건을 유지한다. [NVIDIA 모델 카드](https://huggingface.co/nvidia/Cosmos3-Nano)와 함께 보관한 라이선스 고지를 확인한다. 재배포 시에는 자료별 적용 조건을 확인한다.
 
-기존 라이선스 고지는 모델 보관본에 함께 유지한다. 비공개 보관과 공개 재배포 권한을 구분한다.
+`model_bundle/` 안의 권리 검토 문서는 배포 묶음을 준비한 시점의 기록이다. 현재 저장소의 공개 상태와 다운로드 방법은 이 문서와 Hugging Face 저장소 설명을 기준으로 확인한다.
