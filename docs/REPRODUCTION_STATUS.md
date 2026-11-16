@@ -4,8 +4,10 @@
 
 - Python 표준 라이브러리 기반 Action 형식 검사 CLI
 - 단위 테스트
+- 복원한500step 모델과 native 실행 도구를 연결하는 `scripts/create_runtime.py`
+- 고정된 Hugging Face 파일의 SHA-256 검사와 실행 소스 압축 해제: `scripts/prepare_artifacts.py`
 - `infer.py --check`: 기존 입력·모델 설정·토큰 검사
-- 설명용 5종 직선 Action 생성·검사, 새 가상환경에서 CPU 테스트 30개 통과. [CPU 검사 방법](CLEAN_CPU_REPRODUCTION.md)
+- 설명용 5종 직선 Action 생성·검사. 모델 없이 새 가상환경에서 검사 가능. [CPU 검사 방법](CLEAN_CPU_REPRODUCTION.md)
 - `infer.py --run/--status/--logs/--cancel`: 영상 생성·상태·로그·중단 명령. 기존 Spark에서 GPU 생성 1회와 상태·로그 조회를 확인했다. 실행 중 취소 동작은 시험하지 않았다.
 
 ## 기존 Spark에서 확인된 것
@@ -15,6 +17,12 @@
 - 기존 보고서·비교영상과 실행 설정
 
 장비별 절대경로는 Git 제외 `internal/`에서 관리한다. NVIDIA 프레임워크는 외부 의존성으로 사용한다.
+
+## Spark 외부 모델 보관
+
+500step 추론 변경 가중치·정확한 Base DCP·VAE·tokenizer·실행 소스는 Hugging Face 비공개 저장소에 보관했다. 파일33개 원격 크기·해시 대조, 변경 가중치 재다운로드 해시 검사를 완료했다. [다운로드와 복원](WEIGHTS.md) 참조.
+
+2026-11-16에는 모델 파일을 임시 경로에 배치하고, 보관 ZIP에서 푼 Framework·실행 도구로 복원 절차를 확인했다. 전체1,097개 텐서 해시 대조, 새 runtime 생성, 실제 PNG·Action·텍스트의 native CPU 입력 검사 통과. 설치된 Python 패키지는 기존 환경을 사용했으며 GPU 모델 로드는 수행하지 않았다. 원천 경로의 파일 내용과 수정 시각은 유지했다.
 
 ## 남은 작업
 

@@ -23,10 +23,11 @@ rail-world-model/
 └── internal/                  # 장비별 실행 설정, Git 제외
     ├── runtime.json
     ├── model_config.json
-    └── weights_manifest.json
+    ├── weights_fd500.json     # 현재 최종 모델 텐서 해시
+    └── weights_manifest.json  # 이전300step 검증 기록
 ```
 
-`internal/runtime.json`이 실제 체크포인트와 모델 설정·가중치 검증 목록을 연결한다. 모델 가중치 자체는 기존 원본을 사용한다. `local/configs/`의 기본 TOML은 최종 실행 설정 전체가 아니며, 실제 학습 기록의 `RUN_SPEC` 및 Python compose를 함께 확인한다.
+`internal/runtime.json`이 실제 체크포인트와 모델 설정·가중치 검증 목록을 연결한다. 현재 기본 설정은 `weights_fd500.json`을 사용한다. 새 장비에서 복원한 모델은 `scripts/create_runtime.py`로 별도 설정 파일에 연결한다. 모델 가중치 자체는 기존 원본을 사용한다. `local/configs/`의 기본 TOML은 최종 실행 설정 전체가 아니며, 실제 학습 기록의 `RUN_SPEC` 및 Python compose를 함께 확인한다.
 
 과거 경로의 호환 링크와 원본 실험 이름은 기존 기록의 재현을 위해 보존한다. `nano` 호환 링크는 Git에서 제외하고 파일 관리자에서도 숨긴다. 새 문서·코드에서는 `local/`을 사용한다.
 

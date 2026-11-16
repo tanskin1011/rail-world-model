@@ -18,6 +18,7 @@ outputs/
 *.pt
 *.pth
 *.safetensors
+*.distcp
 # Host-specific evidence locators are not part of the distributable project.
 /scripts/catalog_local_evidence.py
 /scripts/check_local_inference.py

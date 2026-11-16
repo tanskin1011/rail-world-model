@@ -8,7 +8,7 @@ NVIDIA Cosmos3-Nano를 철도 영상에 후속학습한 프로젝트다. 텍스�
 
 ## 대표 영상
 
-현재 모델 **FD500**에 감속 카메라 경로를 입력한 결과다. 미리보기를 누르면 전체 MP4를 열 수 있다.
+현재 **카메라 경로 조건부 모델 · 500step**에 감속 경로를 입력한 결과다. 미리보기를 누르면 전체 MP4를 열 수 있다.
 
 | 실사 첫 이미지에서 생성 | 합성 철도 장면에서 생성 |
 |---|---|
@@ -27,9 +27,9 @@ NVIDIA Cosmos3-Nano를 철도 영상에 후속학습한 프로젝트다. 텍스�
 
 | 기반 모델 | 학습 방식 | 현재 체크포인트 |
 |---|---|---|
-| NVIDIA Cosmos3-Nano | 생성부 LoRA + 카메라 입력 projector 일부 | FD500 |
+| NVIDIA Cosmos3-Nano | 생성부 LoRA + 카메라 입력 projector 일부 | 500step |
 
-기존 철도 초기 모델 → 영상 적응 domain300 → FD300 → 추가200 updates의 계보다. backbone 전체를 학습한 Full SFT는 아니다.
+기존 철도 초기 모델 → 영상 적응300step → 카메라 경로 조건 학습300step → 추가200 updates의 계보다. 영상 생성부 LoRA와 카메라 입력부를 학습하고 나머지 기반 가중치는 고정했다. 원본 기록의 `FD500`은 현재500step 모델을 가리킨다.
 
 ## 학습 구조
 
@@ -46,13 +46,13 @@ NVIDIA Cosmos3-Nano를 철도 영상에 후속학습한 프로젝트다. 텍스�
 
 실사에는 검증된 pose가 없어 domain 단계에만 사용했다. 모델 출력은 미래 RGB 영상이며 로봇 모터 제어 명령은 아니다.
 
-[Action 변환 원리·학습 범위](docs/METHOD.md) · [프로젝트 수행 내용](docs/CONTRIBUTIONS.md)
+[모델·코드 아키텍처](docs/ARCHITECTURE.md) · [학습 단계와 설정](docs/TRAINING.md) · [Action 변환 원리](docs/METHOD.md) · [프로젝트 수행 내용](docs/CONTRIBUTIONS.md)
 
 ## 결과와 한계
 
-FD500의 다섯 감속 입력 사례에서는 후반 배경 이동이 줄어드는 경향이 기록됐다. 다만 감속 사례만으로 다섯 주행 명령의 구분이나 이전 모델 대비 개선을 확정하지 않았다.
+500step 모델의 감속 입력 사례5개에서는 후반 배경 이동이 줄어드는 경향이 기록됐다. 정지·정속·가감속 전체의 구분과 이전 모델 대비 개선은 추가 비교가 필요하다.
 
-이전 **FD300**에서는 동일 조건 A/B 비교를 수행했다. 아래 영상은 위 FD500 결과와 다른 체크포인트다.
+이전 **300step 모델**에서는 동일 조건 A/B 비교를 수행했다. 아래는 학습 데이터 구성에 따른 차이와 실패 사례를 확인하는 영상이다.
 
 | 감속 A/B 비교 | STOP 실패 A/B 비교 |
 |---|---|
@@ -94,19 +94,19 @@ PYTHONPATH=src python3 -m rail_world_model validate-action \
 
 ### 영상 생성
 
-native Cosmos Framework와 모델·Base 의존 가중치·VAE·tokenizer를 준비하고, 각 경로를 로컬 `internal/runtime.json`에 지정한다.
+모델 파일은 [Hugging Face 비공개 저장소](https://huggingface.co/tanskin02/rail-world-model-camera-500step)에 보관한다. [다운로드·환경 설치·가중치 복원](docs/WEIGHTS.md)을 먼저 진행해 새 장비용 runtime을 만든다. 기존 Spark의 폴더 경로는 필요하지 않다.
 
 ```bash
-python3 infer.py --image input.png --action action.json \
+python3 infer.py --runtime internal/runtime_500step.json --image input.png --action action.json \
   --prompt-file scene.txt --output outputs/demo --check
 
-python3 infer.py --image input.png --action action.json \
+python3 infer.py --runtime internal/runtime_500step.json --image input.png --action action.json \
   --prompt-file scene.txt --output outputs/demo --run
 ```
 
 `--check`는 입력·설정을 검사하고 `--run`은 영상을 생성한다. 출력에는 새 폴더를 지정한다.
 
-FD500 가중치 배포 후보는 새 경로에 복원해 전체 1,097개 텐서 해시 일치를 CPU에서 확인했다. 복원 묶음의 GPU 생성과 다른 장비 실행은 아직 확인하지 않았다. 기존 GPU CLI 검증 기록은 FD300 기준이다.
+500step 모델과 기반 가중치·VAE·tokenizer·실행 소스 약34.4GB를 별도로 보관했다. 원격 파일 해시 대조와 변경 가중치 재다운로드 검사를 마쳤다. 임시 경로에서 모델 복원·전체1,097개 텐서 해시 대조·native CPU 입력 검사까지 통과했다. 다른 장비의 환경 설치·GPU 생성은 추가 확인 대상이며, 기존 GPU CLI 검증 기록은300step 기준이다.
 
 [추론 설정·상태·로그](docs/INFERENCE.md) · [가중치 구성·복원](docs/WEIGHTS.md) · [실행 검증 범위](docs/CLI_VERIFICATION.md)
 
@@ -122,7 +122,7 @@ assets/                구조도·대표 영상·미리보기
 infer.py               영상 추론 진입점
 ```
 
-장비별 데이터·가중치·실행 설정은 Git에서 제외한 `local/`, `internal/`에 보관한다. NVIDIA 프레임워크는 외부 의존성으로 사용한다. FD500 가중치는 로컬 배포 후보로 준비했으며 아직 외부에 업로드하지 않았다.
+장비별 데이터·가중치·실행 설정은 Git에서 제외한 `local/`, `internal/`에 보관한다. NVIDIA Framework는 외부 의존성이며, 모델과 호환 실행 소스는 Hugging Face 비공개 저장소에서 내려받는다.
 
 ## 상세 문서
 

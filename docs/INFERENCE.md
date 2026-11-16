@@ -1,6 +1,6 @@
 # Rail World Model 가중치로 영상 생성
 
-기존 native Cosmos Framework 환경에서 학습된 가중치를 불러온다. 모델·VAE·tokenizer·실행 도구의 경로는 Git 제외 `internal/runtime.json`에 설정한다.
+기존 native Cosmos Framework 환경에서 학습된 가중치를 불러온다. 모델·VAE·tokenizer·실행 도구의 경로는 Git 제외 `internal/runtime.json`에 설정한다. 새 장비에서는 [가중치 복원·실행 설정 생성](WEIGHTS.md)을 먼저 따른다. 다른 이름의 설정 파일을 만들었으면 모든 명령에 `--runtime internal/runtime_500step.json`을 추가한다.
 
 현재 기본 모델은 FD500이다. FD300의 설정·가중치와 기존 생성 결과는 이전 버전으로 보존한다. 아래 GPU 실행 검증 기록은 FD300에서 수행한 기록이며, 기본 모델 변경 후의 새 GPU 실행은 이 문서에 포함하지 않는다.
 
