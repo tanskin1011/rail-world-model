@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from symlink_support import symlink_or_skip
 
 ROOT=Path(__file__).resolve().parents[1]
 SPEC=importlib.util.spec_from_file_location('restore_weights',ROOT/'scripts/restore_weights.py')
@@ -20,7 +21,7 @@ class WeightBundleTests(unittest.TestCase):
     def test_reject_external_path_and_symlink(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);(root/'data').write_text('x')
-            (root/'alias').symlink_to('data')
+            symlink_or_skip(root/'alias', 'data')
             for name in ['../data',str(root/'data'),'alias']:
                 with self.assertRaises(ValueError):restore.local_file(root,name)
             self.assertEqual(restore.local_file(root,'data'),root/'data')

@@ -3,6 +3,7 @@ from unittest.mock import patch
 from types import SimpleNamespace
 from pathlib import Path
 from rail_world_model.infer_cli import prepare_request,load_runtime
+from symlink_support import symlink_or_skip
 
 
 class InferenceCliTests(unittest.TestCase):
@@ -37,7 +38,8 @@ class InferenceCliTests(unittest.TestCase):
 
     def test_virtualenv_python_symlink_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
-            p=Path(directory);python=p/'python';python.symlink_to('/usr/bin/python3')
+            import sys
+            p=Path(directory);python=p/'python';symlink_or_skip(python, sys.executable)
             config=p/'config.json';config.write_text(json.dumps({'model':{'config':{'lora_enabled':True,'lora_rank':16,'lora_alpha':32,'tokenizer':{'vae_path':str(config)}}}}))
             (p/'model').mkdir();(p/'model/.metadata').touch();(p/'COMMITTED').touch()
             (p/'BASE_REFERENCE.json').write_text(json.dumps({'frozen_storage_dependencies':{}}))

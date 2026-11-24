@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from symlink_support import symlink_or_skip
 
 SPEC = importlib.util.spec_from_file_location('audit_release', Path(__file__).resolve().parents[1] / 'scripts/audit_release.py')
 release = importlib.util.module_from_spec(SPEC)
@@ -46,7 +47,7 @@ class ReleaseAuditTests(unittest.TestCase):
             root = Path(d)
             (root / 'local').mkdir()
             (root / 'local/value.txt').write_text('private')
-            (root / 'alias').symlink_to('local/value.txt')
+            symlink_or_skip(root / 'alias', 'local/value.txt')
             self.assertEqual(len(release.audit(root, ['local/value.txt', 'alias'])), 2)
 
     def test_paths_and_oversized_payload_rejected(self):

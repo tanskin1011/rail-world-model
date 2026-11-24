@@ -6,6 +6,7 @@ import stat
 import tempfile
 import unittest
 import zipfile
+from symlink_support import symlink_or_skip
 
 spec = importlib.util.spec_from_file_location('prepare_artifacts', Path(__file__).resolve().parents[1] / 'scripts/prepare_artifacts.py')
 module = importlib.util.module_from_spec(spec)
@@ -48,7 +49,7 @@ class ArtifactPreparationTests(unittest.TestCase):
             module.verify_artifacts(self.root, self.write_manifest())
 
     def test_symlink_rejected(self):
-        (self.root / 'alias').symlink_to('weights')
+        symlink_or_skip(self.root / 'alias', 'weights')
         self.manifest['files'][0]['path_in_repo'] = 'alias'
         with self.assertRaises(ValueError):
             module.verify_artifacts(self.root, self.write_manifest())
@@ -65,13 +66,18 @@ class ArtifactPreparationTests(unittest.TestCase):
             module.extract_support(archive, output)
 
     def test_unsafe_archives_leave_no_output(self):
-        for name in ('../escape', '/escape', 'runtime_support/../../escape', 'unexpected.txt', 'runtime_support\\escape'):
+        for name in ('../escape', '/escape', 'runtime_support/../../escape', 'unexpected.txt'):
             archive = self.root / 'bad.zip'
             with zipfile.ZipFile(archive, 'w') as z:
                 z.writestr(name, 'test-only')
             with self.assertRaises(ValueError):
                 module.extract_support(archive, self.root / 'no_output')
             self.assertFalse((self.root / 'no_output').exists())
+
+    def test_raw_backslash_path_rejected(self):
+        # zipfile normalizes separators on Windows before returning member names.
+        with self.assertRaises(ValueError):
+            module.safe_name('runtime_support\\escape')
 
     def test_archive_symlink_rejected(self):
         archive = self.root / 'bad.zip'

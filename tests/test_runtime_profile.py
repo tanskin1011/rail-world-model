@@ -4,6 +4,7 @@ import json
 import os
 import tempfile
 import unittest
+from symlink_support import symlink_or_skip
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts/create_runtime.py'
 spec = importlib.util.spec_from_file_location('create_runtime', SCRIPT)
@@ -20,7 +21,7 @@ class RuntimeProfileTests(unittest.TestCase):
                      'tokenizer', 'bank/scripts', 'bank/skills/platform/tao-run-on-virtualenv/references', 'venv/bin']:
             (self.root / name).mkdir(parents=True, exist_ok=True)
         self.python = self.root / 'venv/bin/python'
-        self.python.symlink_to(Path(os.sys.executable).resolve())
+        symlink_or_skip(self.python, Path(os.sys.executable).resolve())
         self.profile = self.root / 'profile'
         (self.profile / 'RESTORE_RESULT.json').write_text(json.dumps(dict(status='RESTORED_INFERENCE_ONLY', selected_model='FD500')))
         for name in ['model/.metadata', 'COMMITTED']:

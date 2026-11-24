@@ -18,4 +18,15 @@ Isaac Sim의 RGB·pose를 연결하고 프레임 간 상대 변환을 9D Action�
 
 ## 기존 기술과의 경계
 
+공개 저장소에서 구현을 확인할 수 있는 지점은 다음과 같다. 학습 과정의 설계·수행 기록과 공개된 실행 코드를 구분한다.
+
+| 수행 내용 | 공개 근거 |
+|---|---|
+| 데이터 구성·9D 상대 변환·단계별 학습 범위 | [방법](METHOD.md), [학습 설정](TRAINING.md). 내부 학습 loader·gradient mask는 미공개 |
+| 설명용 카메라 계획 생성·입력 형식 검사 | [actions.py](../src/rail_world_model/actions.py), [contracts.py](../src/rail_world_model/contracts.py) |
+| 재현 가능한 입력 예제·출처·해시 기록 | [prepare_demo.py](../scripts/prepare_demo.py) |
+| 조건 주입·가중치 검증·추론 실행 | [infer_cli.py](../src/rail_world_model/infer_cli.py), [native_worker.py](../src/rail_world_model/native_worker.py) |
+| 배포 가중치 복원·장비별 실행 설정 연결 | [restore_weights.py](../scripts/restore_weights.py), [create_runtime.py](../scripts/create_runtime.py) |
+| 비교 실험과 실패 분석 | [결과](RESULTS.md), [공개 비교영상](MEDIA_GALLERY.md) |
+
 Cosmos backbone·기본 Forward Dynamics 구조·Wan VAE·tokenizer·NVIDIA 프레임워크는 기존 구성요소다. 프로젝트의 개발 대상은 철도 적용을 위한 데이터 처리·학습 설정·실험 운영·추론 및 검증 도구다.
