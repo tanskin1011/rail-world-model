@@ -3,6 +3,7 @@
 ## 지금 실행 가능한 것
 
 - Python 표준 라이브러리 기반 Action 형식 검사 CLI
+- 공개 합성 이미지·Action·장면 설명·입력 해시를 준비하는 `scripts/prepare_demo.py`. 입력 준비만 수행하며 모델을 로드하지 않는다.
 - 단위 테스트
 - 복원한500step 모델과 native 실행 도구를 연결하는 `scripts/create_runtime.py`
 - 고정된 Hugging Face 파일의 SHA-256 검사와 실행 소스 압축 해제: `scripts/prepare_artifacts.py`
@@ -30,3 +31,4 @@
 2. 새 장비에서 모델 의존성을 준비하고 GPU 추론 확인.
 3. 실행 중 작업 취소 동작 검증.
 4. 소스 코드 라이선스와 자료별 재배포 조건 확정.
+5. FD300/FD500의 동일 조건 정지·정속·가감속 비교와 구조 보존 평가. [평가 프로토콜](EVALUATION.md)은 계획이며 새 실험 결과가 아니다.

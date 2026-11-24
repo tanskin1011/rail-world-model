@@ -40,7 +40,7 @@ def audit(root, names):
                 issues.append((relative, 'unrecognized media signature'))
             continue
         try:
-            text = path.read_text()
+            text = path.read_text(encoding='utf-8')
         except UnicodeDecodeError:
             issues.append((relative, 'unexpected binary file')); continue
         if re.search(r'/home/[a-zA-Z0-9_-]+/|100\.\d{1,3}\.\d{1,3}\.\d{1,3}', text):

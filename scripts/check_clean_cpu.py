@@ -33,9 +33,9 @@ def main():
         for forbidden in ['internal','local','nano','outputs','datasets','checkpoints']:
             if (checkout/forbidden).exists():raise RuntimeError('Private directory in exported tree: '+forbidden)
         subprocess.run([sys.executable,'-m','venv','--without-pip',str(temp/'venv')],check=True)
-        python=temp/'venv/bin/python'
-        env=dict(os.environ,PYTHONPATH=str(checkout/'src'),PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1',CUDA_VISIBLE_DEVICES='')
-        tests=subprocess.run([str(python),'-m','unittest','discover','-s','tests','-v'],cwd=checkout,env=env,capture_output=True,text=True)
+        python=temp/('venv/Scripts/python.exe' if os.name=='nt' else 'venv/bin/python')
+        env=dict(os.environ,PYTHONPATH=str(checkout/'src'),PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1',CUDA_VISIBLE_DEVICES='')
+        tests=subprocess.run([str(python),'-m','unittest','discover','-s','tests','-v'],cwd=checkout,env=env,capture_output=True,text=True,encoding='utf-8')
         if tests.returncode:raise RuntimeError(tests.stdout+tests.stderr)
         profiles=[]
         for profile in ['stop','const5','const10','accel','decel']:
@@ -45,8 +45,11 @@ def main():
                 if run.returncode:raise RuntimeError(run.stdout+run.stderr)
             profiles.append(profile)
         version=subprocess.check_output([str(python),'--version'],text=True).strip()
+        test_count=int(re.search(r'Ran (\d+) tests',tests.stderr).group(1))
+        skipped_match=re.search(r'skipped=(\d+)',tests.stderr)
+        skipped=int(skipped_match.group(1)) if skipped_match else 0
         report=dict(status='PASS_CLEAN_CPU',source_tree=tree,source_mode='staged' if args.staged else 'working-tree-candidates',files_sha256=manifest,python=version,
-            unit_tests=int(re.search(r'Ran (\d+) tests',tests.stderr).group(1)),
+            unit_tests=test_count,unit_tests_passed=test_count-skipped,unit_tests_skipped=skipped,
             profiles_generated_and_validated=profiles,private_assets_present=False,
             external_python_packages_installed=False,gpu_model_loaded=False,
             different_physical_machine_tested=False,

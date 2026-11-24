@@ -12,10 +12,11 @@
 | 구성 | 상태 |
 |---|---|
 | Action 생성·형식 검사 | 표준 라이브러리로 실행 가능 |
+| 공개 입력 샘플 준비 | `scripts/prepare_demo.py`, 모델·GPU 없이 실행 가능 |
 | 추론 CLI | 기존 Spark에서 모델 로드·생성·전체 디코딩 확인 |
 | 학습 CLI | 기존 내부 실행 코드를 공개 도구로 분리하는 작업 필요 |
 | CPU 테스트 | Action·입력·배포·가중치·실행 설정 생성 검사. 최신 실행 결과는 배포 검토 기록에서 확인 |
-| GitHub CI | 테스트와 배포 검사 정의. 이번 수정본의 원격 실행 전 |
+| GitHub CI | Linux·Windows / Python 3.11·3.12의 CPU 테스트·샘플 준비·배포 검사 정의. 수정본의 원격 실행은 별도 확인 |
 | 대표 미디어 | FD500 영상2개·GIF, FD300 비교영상4개·학습 이미지2개와 출처·판정 제공 |
 
 [모델과 코드 구조](ARCHITECTURE.md) · [학습 단계·설정](TRAINING.md) · [가중치 복원·실행 설정](WEIGHTS.md)
@@ -23,6 +24,8 @@
 ## 수정 후 검사
 
 저장소 루트에서 실행한다.
+
+테스트를 실행하기 전에 `python -m pip install -e .`로 프로젝트 패키지를 설치하거나 `PYTHONPATH`에 `src`를 지정한다. GPU 프레임워크 패키지는 이 검사에 필요 없다.
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
