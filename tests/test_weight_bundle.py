@@ -24,7 +24,7 @@ class WeightBundleTests(unittest.TestCase):
             symlink_or_skip(root/'alias', 'data')
             for name in ['../data',str(root/'data'),'alias']:
                 with self.assertRaises(ValueError):restore.local_file(root,name)
-            self.assertEqual(restore.local_file(root,'data'),root/'data')
+            self.assertEqual(restore.local_file(root,'data'),(root/'data').resolve())
 
     def test_reject_changed_bundle_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
